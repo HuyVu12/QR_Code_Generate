@@ -5,7 +5,7 @@ import uuid
 st.title("QR Code Generator")
 
 st.write("Enter some text for generating QR code:")
-text = st.text_input("Text")
+text = st.text_area("Text")
 
 def gen_qr(text):
     qrcode.make(text)
