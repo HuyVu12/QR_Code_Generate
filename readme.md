@@ -1,4 +1,4 @@
-**link demo:** https://huyvu12-qr-code-generate-main-tjb1qr.streamlit.app/
+**link demo:** https://huyvu12-qr-code-gen.streamlit.app/
 
 ![Image](image.png)
 
