@@ -24,13 +24,18 @@ m_col1, m_col2 = st.columns([2, 1], vertical_alignment='center')
 with m_col1:    
     text = st.text_area("Text", 
                         placeholder="Enter text here for generating QR code",
-                        value=st.session_state.textInput)
+                        value=st.session_state.textInput,
+                        max_chars=1000,
+                        )
     
     st.session_state.textInput = text
     m_col1_1, m_col1_2, m_col1_3 = st.columns([1, 1, 1], vertical_alignment='center')
     with m_col1_1:
         if st.button('Generate'):
-            st.session_state.file_name = gen_qr(text)
+            with st.spinner("Waiting for QR code to be generated..."):
+                st.session_state.file_name = gen_qr(text)
+                st.balloons()
+                st.success("QR code generated successfully!")
     with m_col1_2:
         if st.button('Reset'):
             st.session_state.textInput = ''
