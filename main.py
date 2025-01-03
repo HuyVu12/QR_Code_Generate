@@ -10,19 +10,43 @@ if 'textInput' not in st.session_state:
 if 'file_name' not in st.session_state:
     st.session_state.file_name = ''
 
+if 'fill_color' not in st.session_state:
+    st.session_state.fill_color = '#000000'
+
+if 'back_color' not in st.session_state:
+    st.session_state.back_color = '#ffffff'
+
 st.title("QR Code Generator")
 
 def gen_qr(text):
     qrcode.make(text)
     file_name = f"{uuid.uuid4()}.png"
     qrcode.make(text).save(file_name)
-    print(f"QR code saved to {file_name}")
+    return file_name
+def gen_qr_with_color(text, fill_color, back_color):
+    qr = qrcode.QRCode(
+        version=None,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(text)
+    qr.make(fit=True)
+
+    file_name = f"{uuid.uuid4()}.png"
+    img = qr.make_image(fill_color=fill_color, back_color=back_color)
+    img.save(file_name)
     return file_name
 
 m_col1, m_col2 = st.columns([2, 1], vertical_alignment='center')
 
-with m_col1:    
-    text = st.text_area("Text", 
+with m_col1:   
+    r1_c1, r1_c2 = st.columns(2)
+    with r1_c1:
+        st.session_state.fill_color = st.color_picker('Fill color', value=st.session_state.fill_color)
+    with r1_c2:
+        st.session_state.back_color = st.color_picker('Back color', value=st.session_state.back_color)
+    text = st.text_area("Content here", 
                         placeholder="Enter text here for generating QR code",
                         value=st.session_state.textInput,
                         max_chars=1000,
@@ -32,13 +56,25 @@ with m_col1:
     m_col1_1, m_col1_2, m_col1_3 = st.columns([1, 1, 1], vertical_alignment='center')
     with m_col1_1:
         if st.button('Generate'):
-            with st.spinner("Waiting for QR code to be generated..."):
-                st.session_state.file_name = gen_qr(text)
-                st.balloons()
-                st.success("QR code generated successfully!")
+            if len(st.session_state.textInput) == 0:
+                st.toast("Please enter some text")
+            elif len(st.session_state.textInput) > 1000:
+                st.toast("Your content is too long, please enter less than 1000 characters")
+            else:
+                with st.spinner("Waiting for QR code to be generated..."):
+                    st.session_state.file_name = gen_qr_with_color(
+                        text,
+                          st.session_state.fill_color,
+                          st.session_state.back_color
+                        )
+                    # st.info(f'{st.session_state.fill_color} - {st.session_state.back_color}')
+                    st.toast("QR code generated successfully")
+                    st.balloons()
     with m_col1_2:
         if st.button('Reset'):
             st.session_state.textInput = ''
+            st.session_state.fill_color = '#000000'
+            st.session_state.back_color = '#ffffff'
             st.rerun()
     with m_col1_3:
         if st.session_state.file_name:
