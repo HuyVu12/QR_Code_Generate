@@ -27,7 +27,7 @@ with m_col1:
                         value=st.session_state.textInput)
     
     st.session_state.textInput = text
-    m_col1_1, m_col1_2 = st.columns([1, 1], vertical_alignment='center')
+    m_col1_1, m_col1_2, m_col1_3 = st.columns([1, 1, 1], vertical_alignment='center')
     with m_col1_1:
         if st.button('Generate'):
             st.session_state.file_name = gen_qr(text)
@@ -35,6 +35,15 @@ with m_col1:
         if st.button('Reset'):
             st.session_state.textInput = ''
             st.rerun()
+    with m_col1_3:
+        if st.session_state.file_name:
+            with open (st.session_state.file_name, 'rb') as file:
+                btn = st.download_button(
+                    label="Download image",
+                    data=file,
+                    file_name=f"{st.session_state.file_name}",
+                    mime="image/png",
+                )
 
     col1, col2 = st.columns(2, vertical_alignment='bottom')
     with col1:
