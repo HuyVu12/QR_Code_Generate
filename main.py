@@ -14,6 +14,6 @@ def gen_qr(text):
     print(f"QR code saved to {file_name}")
     return file_name
 
-if text:
+if st.button('Generate'):
     file_name = gen_qr(text)
-    st.image(file_name, caption=f"QR code for {text}")
+    st.image(file_name, caption=f"{text}")
